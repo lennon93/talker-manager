@@ -1,4 +1,5 @@
 const express = require('express');
+const crypto = require('crypto');
 const { readTalkersData, readTalkersDataById } = require('./utils/utilsFs');
 
 const app = express();
@@ -34,4 +35,9 @@ app.get('/talker/:id', async (req, res) => {
       message: 'Pessoa palestrante não encontrada',
     });
   }
+});
+
+app.post('/login', (req, res) => {
+  const randomToken = crypto.randomBytes(8).toString('hex');
+  return res.status(200).json({ token: randomToken });
 });

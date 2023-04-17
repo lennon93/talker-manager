@@ -1,5 +1,6 @@
 const express = require('express');
-// inicia o projeto
+const { readTalkersData } = require('./utils/utilsFs');
+
 const app = express();
 app.use(express.json());
 
@@ -13,4 +14,9 @@ app.get('/', (_request, response) => {
 
 app.listen(PORT, () => {
   console.log('Online');
+});
+
+app.get('/talker', async (req, res) => {
+  const talkers = await readTalkersData();
+  return res.status(200).json(talkers);
 });

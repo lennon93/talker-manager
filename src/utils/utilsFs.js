@@ -24,6 +24,18 @@ async function readTalkersDataById(id) {
     }
 }
 
+async function readTalkersDataByQuery(q) {
+  try {
+    const data = await fs.readFile(path.resolve(__dirname, PATH_NAME));
+    const talkers = JSON.parse(data);
+    const talkerByQuery = talkers
+      .filter((talker) => talker.name.toUpperCase().includes(q.toUpperCase()));
+    return talkerByQuery;
+  } catch (error) {
+      console.error(`Erro na leitura do arquivo: ${error}`);
+  }
+}
+
 async function writeTalkersData(talker) {
     try {
       const oldTalkers = await readTalkersData();
@@ -72,4 +84,5 @@ module.exports = {
     writeTalkersData,
     writeTalkersDataById,
     deleteTalkerData,
+    readTalkersDataByQuery,
 };

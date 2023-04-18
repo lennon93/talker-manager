@@ -1,7 +1,7 @@
 const hasEmail = (req, res, next) => {
  const { email } = req.body;
  if (!email) {
-  return res.status(400).send({
+  return res.status(400).json({
     message: 'O campo "email" é obrigatório',
   });
  }
@@ -13,7 +13,7 @@ const validEmail = (req, res, next) => {
     const regex = /\S+@\S+\.\S+/;
     const validateEmail = regex.test(email);
     if (!validateEmail) {
-    return res.status(400).send({
+    return res.status(400).json({
         message: 'O "email" deve ter o formato "email@email.com"',
       });
     }

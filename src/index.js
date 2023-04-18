@@ -1,7 +1,8 @@
 const express = require('express');
 const crypto = require('crypto');
 const {
-   readTalkersData, readTalkersDataById, writeTalkersData, writeTalkersDataById, deleteTalkerData, 
+   readTalkersData, readTalkersDataById, writeTalkersData,
+    writeTalkersDataById, deleteTalkerData, readTalkersDataByQuery, 
 } = require('./utils/utilsFs');
 const { hasEmail, validEmail } = require('./middleware/validateEmail');
 const { hasPassword, validPassword } = require('./middleware/validatePassword');
@@ -28,6 +29,12 @@ app.listen(PORT, () => {
 app.get('/talker', async (req, res) => {
   const talkers = await readTalkersData();
   return res.status(200).json(talkers);
+});
+
+app.get('/talker/search', async (req, res) => {
+  const { q } = req.query;
+  const talkersByQuery = await readTalkersDataByQuery(q);
+  return res.status(200).json(talkersByQuery);
 });
 
 app.get('/talker/:id', async (req, res) => {

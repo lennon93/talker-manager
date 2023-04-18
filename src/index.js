@@ -1,6 +1,8 @@
 const express = require('express');
 const crypto = require('crypto');
 const { readTalkersData, readTalkersDataById } = require('./utils/utilsFs');
+const { hasEmail, validEmail } = require('./middleware/validateEmail');
+const { hasPassword, validPassword } = require('./middleware/validatePassword');
 
 const app = express();
 app.use(express.json());
@@ -37,7 +39,7 @@ app.get('/talker/:id', async (req, res) => {
   }
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', hasEmail, validEmail, hasPassword, validPassword, (req, res) => {
   const randomToken = crypto.randomBytes(8).toString('hex');
   return res.status(200).json({ token: randomToken });
 });

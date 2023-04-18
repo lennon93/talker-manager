@@ -1,6 +1,8 @@
 const express = require('express');
 const crypto = require('crypto');
-const { readTalkersData, readTalkersDataById, writeTalkersData } = require('./utils/utilsFs');
+const {
+   readTalkersData, readTalkersDataById, writeTalkersData, writeTalkersDataById, 
+} = require('./utils/utilsFs');
 const { hasEmail, validEmail } = require('./middleware/validateEmail');
 const { hasPassword, validPassword } = require('./middleware/validatePassword');
 const { 
@@ -56,3 +58,26 @@ tokenValidation, nameValidation, ageValidation,
     const newTalkers = await writeTalkersData(talker);
     return res.status(201).json(newTalkers);
 });
+
+app.put('/talker/:id',
+tokenValidation, nameValidation, ageValidation,
+ talkValidation, watchedAtValidation, rateValidation,
+async (req, res) => {   
+      const { id } = req.params;
+      const talker = req.body;
+      const idTalker = Number(id);
+      const updatedTalker = { id: idTalker, ...talker };
+      try {
+      await writeTalkersDataById(idTalker, talker);
+      const oldTalkers = await readTalkersData();     
+      if (!oldTalkers.some((oldTalker) => oldTalker.id === idTalker)) {
+        throw new Error('Pessoa palestrante não encontrada');
+     }
+     
+     return res.status(200).json(updatedTalker);
+    } catch (error) { 
+      return res.status(404).json({
+        message: 'Pessoa palestrante não encontrada',
+      });
+    }
+  });   

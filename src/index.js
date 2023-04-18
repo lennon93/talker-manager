@@ -1,7 +1,7 @@
 const express = require('express');
 const crypto = require('crypto');
 const {
-   readTalkersData, readTalkersDataById, writeTalkersData, writeTalkersDataById, 
+   readTalkersData, readTalkersDataById, writeTalkersData, writeTalkersDataById, deleteTalkerData, 
 } = require('./utils/utilsFs');
 const { hasEmail, validEmail } = require('./middleware/validateEmail');
 const { hasPassword, validPassword } = require('./middleware/validatePassword');
@@ -81,3 +81,9 @@ async (req, res) => {
       });
     }
   });   
+
+  app.delete('/talker/:id', tokenValidation, async (req, res) => {
+      const { id } = req.params;
+      await deleteTalkerData(Number(id));
+      return res.status(204).end();
+  });

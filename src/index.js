@@ -1,8 +1,12 @@
 const express = require('express');
 const crypto = require('crypto');
-const { readTalkersData, readTalkersDataById } = require('./utils/utilsFs');
+const { readTalkersData, readTalkersDataById, writeTalkersData } = require('./utils/utilsFs');
 const { hasEmail, validEmail } = require('./middleware/validateEmail');
 const { hasPassword, validPassword } = require('./middleware/validatePassword');
+const { 
+  tokenValidation, talkValidation, nameValidation,
+   ageValidation, watchedAtValidation, rateValidation,
+  } = require('./middleware/validateTalkers');
 
 const app = express();
 app.use(express.json());
@@ -42,4 +46,13 @@ app.get('/talker/:id', async (req, res) => {
 app.post('/login', hasEmail, validEmail, hasPassword, validPassword, (req, res) => {
   const randomToken = crypto.randomBytes(8).toString('hex');
   return res.status(200).json({ token: randomToken });
+});
+
+app.post('/talker', 
+tokenValidation, nameValidation, ageValidation,
+ talkValidation, watchedAtValidation, rateValidation,
+  async (req, res) => {
+    const talker = req.body;
+    const newTalkers = await writeTalkersData(talker);
+    return res.status(201).json(newTalkers);
 });

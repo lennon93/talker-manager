@@ -31,7 +31,7 @@ app.get('/talker', async (req, res) => {
   return res.status(200).json(talkers);
 });
 
-app.get('/talker/search', async (req, res) => {
+app.get('/talker/search', tokenValidation, async (req, res) => {
   const { q } = req.query;
   const talkersByQuery = await readTalkersDataByQuery(q);
   return res.status(200).json(talkersByQuery);

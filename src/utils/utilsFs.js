@@ -1,5 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
+const connect = require('../db/connection');
 
 const PATH_NAME = '../talker.json';
 
@@ -87,7 +88,6 @@ async function deleteTalkerData(id) {
 
 async function patchTalkerData(id, rate) {
   const oldTalkers = await readTalkersData();
-  console.log(rate);
   const filtredTalker = oldTalkers.filter((talker) => talker.id === id);
   const updatedTalker = filtredTalker[0];     
   updatedTalker.talk.rate = rate;
@@ -104,6 +104,8 @@ async function patchTalkerData(id, rate) {
 }
 }
 
+const readTalkersDataInDB = () => connect.execute('SELECT * FROM talkers');
+
 module.exports = {
     readTalkersData,
     readTalkersDataById,
@@ -112,4 +114,5 @@ module.exports = {
     deleteTalkerData,
     readTalkersDataByQuery,
     patchTalkerData,
+    readTalkersDataInDB,
 };

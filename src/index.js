@@ -1,9 +1,10 @@
 const express = require('express');
 const crypto = require('crypto');
+const connection = require('./db/connection');
 const {
    readTalkersData, readTalkersDataById, writeTalkersData,
     writeTalkersDataById, deleteTalkerData, readTalkersDataByQuery, 
-    patchTalkerData,
+    patchTalkerData, readTalkersDataInDB,
 } = require('./utils/utilsFs');
 const { hasEmail, validEmail } = require('./middleware/validateEmail');
 const { hasPassword, validPassword } = require('./middleware/validatePassword');
@@ -24,8 +25,29 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log('Online');
+
+  const [result] = await connection.execute('SELECT 1');
+  if (result) {
+    console.log('MySQL connection OK');
+  }
+});
+
+app.get('/talker/db', async (req, res) => {
+  const [talkers] = await readTalkersDataInDB();
+  const correctTalkers = talkers.map((talker) => (
+    {
+     age: talker.age,
+     id: talker.id,
+     name: talker.name,
+     talk: {
+       rate: talker.talk_rate,
+       watchedAt: talker.talk_watched_at,
+     },  
+   }
+  ));
+  return res.status(200).json(correctTalkers);
 });
 
 app.get('/talker/search',

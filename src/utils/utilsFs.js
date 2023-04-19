@@ -85,6 +85,25 @@ async function deleteTalkerData(id) {
   }
 }
 
+async function patchTalkerData(id, rate) {
+  const oldTalkers = await readTalkersData();
+  console.log(rate);
+  const filtredTalker = oldTalkers.filter((talker) => talker.id === id);
+  const updatedTalker = filtredTalker[0];     
+  updatedTalker.talk.rate = rate;
+  const newTalkers = oldTalkers.reduce((talkersList, currentTalker) => {
+    if (currentTalker.id === id) return [...talkersList, updatedTalker];
+    return [...talkersList, currentTalker];
+  }, []);
+  const newData = JSON.stringify(newTalkers); 
+  try { 
+  await fs.writeFile(path.resolve(__dirname, PATH_NAME), newData);
+  return console.log(updatedTalker);
+} catch (error) {
+    console.error(`Erro na escrita do arquivo: ${error}`);
+}
+}
+
 module.exports = {
     readTalkersData,
     readTalkersDataById,
@@ -92,4 +111,5 @@ module.exports = {
     writeTalkersDataById,
     deleteTalkerData,
     readTalkersDataByQuery,
+    patchTalkerData,
 };

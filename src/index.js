@@ -3,14 +3,14 @@ const crypto = require('crypto');
 const {
    readTalkersData, readTalkersDataById, writeTalkersData,
     writeTalkersDataById, deleteTalkerData, readTalkersDataByQuery, 
+    patchTalkerData,
 } = require('./utils/utilsFs');
 const { hasEmail, validEmail } = require('./middleware/validateEmail');
 const { hasPassword, validPassword } = require('./middleware/validatePassword');
 const { 
   tokenValidation, talkValidation, nameValidation,
    ageValidation, watchedAtValidation, rateValidation, 
-   rateValidationSearch,
-   dateValidation,
+   rateValidationSearch, dateValidation, rateValidationPatch,
   } = require('./middleware/validateTalkers');
 
 const app = express();
@@ -35,6 +35,14 @@ app.get('/talker/search',
 
   const talkersByQueryAndRate = await readTalkersDataByQuery(q, Number(rate), date);
   return res.status(200).json(talkersByQueryAndRate);
+});
+
+app.patch('/talker/rate/:id', tokenValidation, rateValidationPatch, async (req, res) => {
+  const { id } = req.params;
+  const { rate } = req.body;
+
+  await patchTalkerData(Number(id), Number(rate));
+    return res.status(204).end();
 });
 
 app.get('/talker', async (req, res) => {

@@ -24,13 +24,20 @@ async function readTalkersDataById(id) {
     }
 }
 
-async function readTalkersDataByQuery(q) {
+async function readTalkersDataByQuery(q, rate) {
   try {
     const data = await fs.readFile(path.resolve(__dirname, PATH_NAME));
     const talkers = JSON.parse(data);
-    const talkerByQuery = talkers
+    let talkersByQuery = talkers;
+    if (q) {
+      talkersByQuery = talkersByQuery
       .filter((talker) => talker.name.toUpperCase().includes(q.toUpperCase()));
-    return talkerByQuery;
+    }    
+    if (rate) {
+      talkersByQuery = talkersByQuery
+        .filter((talker) => talker.talk.rate === rate);
+    }   
+    return talkersByQuery;
   } catch (error) {
       console.error(`Erro na leitura do arquivo: ${error}`);
   }

@@ -8,7 +8,8 @@ const { hasEmail, validEmail } = require('./middleware/validateEmail');
 const { hasPassword, validPassword } = require('./middleware/validatePassword');
 const { 
   tokenValidation, talkValidation, nameValidation,
-   ageValidation, watchedAtValidation, rateValidation,
+   ageValidation, watchedAtValidation, rateValidation, 
+   rateValidationSearch,
   } = require('./middleware/validateTalkers');
 
 const app = express();
@@ -26,15 +27,16 @@ app.listen(PORT, () => {
   console.log('Online');
 });
 
+app.get('/talker/search', tokenValidation, rateValidationSearch, async (req, res) => {
+  const { q, rate } = req.query;
+
+  const talkersByQueryAndRate = await readTalkersDataByQuery(q, Number(rate));
+  return res.status(200).json(talkersByQueryAndRate);
+});
+
 app.get('/talker', async (req, res) => {
   const talkers = await readTalkersData();
   return res.status(200).json(talkers);
-});
-
-app.get('/talker/search', tokenValidation, async (req, res) => {
-  const { q } = req.query;
-  const talkersByQuery = await readTalkersDataByQuery(q);
-  return res.status(200).json(talkersByQuery);
 });
 
 app.get('/talker/:id', async (req, res) => {

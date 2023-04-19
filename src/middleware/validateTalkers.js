@@ -71,6 +71,18 @@ const watchedAtValidation = (req, res, next) => {
     next();
 };
 
+const dateValidation = (req, res, next) => {
+  const { date } = req.query;
+  const regex = /^[0-9]{2}(\/){1}[0-9]{2}(\/){1}[0-9]{4}$/g;
+
+if (date && !regex.test(date)) {
+return res.status(400).json({
+      message: 'O parâmetro "date" deve ter o formato "dd/mm/aaaa"',
+    });
+}
+  next();
+};
+
 const rateValidationSearch = (req, res, next) => {
   const { rate } = req.query;
   const numberRate = Number(rate);
@@ -108,4 +120,5 @@ module.exports = {
   watchedAtValidation,
   rateValidation,
   rateValidationSearch,
+  dateValidation,
 };

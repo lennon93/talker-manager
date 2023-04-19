@@ -10,6 +10,7 @@ const {
   tokenValidation, talkValidation, nameValidation,
    ageValidation, watchedAtValidation, rateValidation, 
    rateValidationSearch,
+   dateValidation,
   } = require('./middleware/validateTalkers');
 
 const app = express();
@@ -27,10 +28,12 @@ app.listen(PORT, () => {
   console.log('Online');
 });
 
-app.get('/talker/search', tokenValidation, rateValidationSearch, async (req, res) => {
-  const { q, rate } = req.query;
+app.get('/talker/search',
+ tokenValidation, rateValidationSearch, dateValidation,
+  async (req, res) => {
+  const { q, rate, date } = req.query;
 
-  const talkersByQueryAndRate = await readTalkersDataByQuery(q, Number(rate));
+  const talkersByQueryAndRate = await readTalkersDataByQuery(q, Number(rate), date);
   return res.status(200).json(talkersByQueryAndRate);
 });
 

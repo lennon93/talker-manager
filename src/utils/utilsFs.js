@@ -24,8 +24,7 @@ async function readTalkersDataById(id) {
     }
 }
 
-async function readTalkersDataByQuery(q, rate) {
-  try {
+async function readTalkersDataByQuery(q, rate, date) {
     const data = await fs.readFile(path.resolve(__dirname, PATH_NAME));
     const talkers = JSON.parse(data);
     let talkersByQuery = talkers;
@@ -36,11 +35,12 @@ async function readTalkersDataByQuery(q, rate) {
     if (rate) {
       talkersByQuery = talkersByQuery
         .filter((talker) => talker.talk.rate === rate);
+    } 
+    if (date) {
+      talkersByQuery = talkersByQuery
+        .filter((talker) => talker.talk.watchedAt === date);
     }   
     return talkersByQuery;
-  } catch (error) {
-      console.error(`Erro na leitura do arquivo: ${error}`);
-  }
 }
 
 async function writeTalkersData(talker) {

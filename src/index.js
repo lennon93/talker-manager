@@ -1,6 +1,7 @@
 const express = require('express');
 const crypto = require('crypto');
 const connection = require('./db/connection');
+
 const {
    readTalkersData, readTalkersDataById, writeTalkersData,
     writeTalkersDataById, deleteTalkerData, readTalkersDataByQuery, 

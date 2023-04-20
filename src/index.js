@@ -35,6 +35,15 @@ app.listen(PORT, async () => {
   }
 });
 
+app.get('/talker/search',
+ tokenValidation, rateValidationSearch, dateValidation,
+  async (req, res) => {
+  const { q, rate, date } = req.query;
+
+  const talkersByQueryAndRate = await readTalkersDataByQuery(q, Number(rate), date);
+  return res.status(200).json(talkersByQueryAndRate);
+});
+
 app.get('/talker/db', async (req, res) => {
   const [talkers] = await readTalkersDataInDB();
   const correctTalkers = talkers.map((talker) => (
@@ -49,15 +58,6 @@ app.get('/talker/db', async (req, res) => {
    }
   ));
   return res.status(200).json(correctTalkers);
-});
-
-app.get('/talker/search',
- tokenValidation, rateValidationSearch, dateValidation,
-  async (req, res) => {
-  const { q, rate, date } = req.query;
-
-  const talkersByQueryAndRate = await readTalkersDataByQuery(q, Number(rate), date);
-  return res.status(200).json(talkersByQueryAndRate);
 });
 
 app.patch('/talker/rate/:id', tokenValidation, rateValidationPatch, async (req, res) => {
